@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../interfaces/product.interface';
+import { CartService } from '../../services/cart.service';
 
 @Component({
   selector: 'app-product-detail',
@@ -18,7 +19,8 @@ export class ProductDetailComponent implements OnInit {
 
   constructor(
     private route: ActivatedRoute,
-    private productService: ProductService
+    private productService: ProductService,
+    private cartService: CartService
   ) {}
 
   ngOnInit(): void {
@@ -50,5 +52,12 @@ export class ProductDetailComponent implements OnInit {
       return 'text-orange-500';
     }
     return 'text-red-500';
+  }
+
+  addToCart(): void {
+    if (this.product) {
+      console.log('Adding to cart:', this.product); // Debug log
+      this.cartService.addToCart(this.product);
+    }
   }
 }
