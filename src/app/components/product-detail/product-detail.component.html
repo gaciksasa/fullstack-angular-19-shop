@@ -1,1 +1,78 @@
-<p>product-detail works!</p>
+<div class="container mx-auto px-4 py-8">
+    <div *ngIf="loading" class="text-center">
+      Loading product details...
+    </div>
+    
+    <div *ngIf="error" class="text-center text-red-500">
+      {{ error }}
+    </div>
+
+    <div *ngIf="product && !loading" class="bg-white rounded-lg shadow-lg p-6">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Image Gallery -->
+        <div>
+          <img [src]="product.thumbnail" [alt]="product.title" 
+               class="w-full h-96 object-cover rounded-lg">
+          <div class="grid grid-cols-4 gap-2 mt-4">
+            <img *ngFor="let image of product.images"
+                 [src]="image" [alt]="product.title"
+                 class="w-full h-24 object-cover rounded cursor-pointer">
+          </div>
+        </div>
+
+        <!-- Product Info -->
+        <div>
+          <button routerLink="/products" class="text-blue-600 mb-4">
+            ← Back to Products
+          </button>
+          
+          <h1 class="text-3xl font-bold mb-2">{{product.title}}</h1>
+          <p class="text-gray-600 mb-4">{{product.description}}</p>
+          
+          <div class="flex items-center mb-4">
+            <span class="text-yellow-400">★</span>
+            <span class="ml-1">{{product.rating}}</span>
+          </div>
+
+          <div class="flex items-center justify-between mb-4">
+            <div>
+              <span class="text-3xl font-bold">${{product.price}}</span>
+              <span *ngIf="product.discountPercentage > 0" 
+                    class="ml-2 text-red-500">
+                -{{product.discountPercentage}}%
+              </span>
+            </div>
+            <span [class]="getStockStatusClass()">
+              {{product.availabilityStatus}}
+            </span>
+          </div>
+
+          <div class="border-t border-gray-200 pt-4">
+            <h2 class="text-xl font-semibold mb-2">Product Details</h2>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <p class="text-gray-600">Brand</p>
+                <p class="font-semibold">{{product.brand}}</p>
+              </div>
+              <div>
+                <p class="text-gray-600">Category</p>
+                <p class="font-semibold">{{product.category}}</p>
+              </div>
+              <div>
+                <p class="text-gray-600">SKU</p>
+                <p class="font-semibold">{{product.sku}}</p>
+              </div>
+              <div>
+                <p class="text-gray-600">Stock</p>
+                <p class="font-semibold">{{product.stock}} units</p>
+              </div>
+            </div>
+          </div>
+
+          <button class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg mt-6 hover:bg-blue-700 transition-colors">
+            Add to Cart
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
