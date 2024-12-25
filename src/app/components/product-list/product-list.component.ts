@@ -5,13 +5,50 @@ import { RouterModule } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../interfaces/product.interface';
 import { ProductCardComponent } from '../product-card/product-card.component';
+import { 
+  trigger, 
+  style, 
+  animate, 
+  transition, 
+  query, 
+  stagger 
+} from '@angular/animations';
 
 @Component({
   selector: 'app-product-list',
   standalone: true,
   imports: [CommonModule, RouterModule, FormsModule, ProductCardComponent],
   templateUrl: './product-list.component.html',
-  styleUrl: './product-list.component.css'
+  styleUrl: './product-list.component.css',
+  animations: [
+    trigger('listAnimation', [
+      transition('* <=> *', [
+        query(':enter', [
+          style({ opacity: 0, transform: 'scale(0.95)' }),
+          stagger('30ms', [
+            animate('200ms ease-out', 
+              style({ opacity: 1, transform: 'scale(1)' })
+            )
+          ])
+        ], { optional: true }),
+        query(':leave', [
+          stagger('30ms', [
+            animate('200ms ease-out', 
+              style({ opacity: 0, transform: 'scale(0.95)' })
+            )
+          ])
+        ], { optional: true })
+      ])
+    ]),
+    trigger('fadeSlide', [
+      transition(':enter', [
+        style({ opacity: 0, transform: 'translateY(-10px)' }),
+        animate('200ms ease-out', 
+          style({ opacity: 1, transform: 'translateY(0)' })
+        )
+      ])
+    ])
+  ]
 })
 export class ProductListComponent implements OnInit {
   products: Product[] = [];
