@@ -15,9 +15,13 @@ export class ShoppingCartComponent {
   @Output() closeCart = new EventEmitter<void>();
   
   cart$ = this.cartService.getCart();
-  formatPrice = formatPrice; // Make the utility function available in the template
+  formatPrice = formatPrice;
 
   constructor(private cartService: CartService) {}
+
+  removeItem(productId: number): void {
+    this.cartService.removeFromCart(productId);
+  }
 
   onClose(): void {
     this.closeCart.emit();
