@@ -23,14 +23,36 @@
   
       <!-- Product Grid -->
       <div class="flex-1">
+        <!-- Sorting Controls -->
+        <div class="mb-6 flex justify-between items-center">
+          <div class="text-sm text-gray-500">
+            Showing {{filteredProducts.length}} products
+          </div>
+          <div class="flex items-center gap-2">
+            <label for="sort" class="text-sm text-gray-600">Sort by:</label>
+            <select id="sort"
+                    [(ngModel)]="currentSort"
+                    (ngModelChange)="onSortChange($event)"
+                    class="border rounded px-2 py-1 text-sm">
+              <option *ngFor="let option of sortOptions" 
+                      [value]="option.value">
+                {{option.label}}
+              </option>
+            </select>
+          </div>
+        </div>
+  
+        <!-- Loading State -->
         <div *ngIf="loading" class="text-center py-8">
           Loading products...
         </div>
   
+        <!-- Error State -->
         <div *ngIf="error" class="text-center text-red-500 py-8">
-          {{ error }}
+          {{error}}
         </div>
   
+        <!-- Product Grid -->
         <div *ngIf="!loading && !error">
           <div *ngIf="filteredProducts.length === 0" class="text-center py-8">
             No products found for selected categories.
