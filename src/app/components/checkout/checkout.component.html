@@ -1,0 +1,129 @@
+<div class="container mx-auto px-4 py-8">
+    <div class="max-w-4xl mx-auto">
+      <h1 class="text-3xl font-bold mb-8">Checkout</h1>
+  
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Order Summary -->
+        <div class="bg-white p-6 rounded-lg shadow">
+          <h2 class="text-xl font-semibold mb-4">Order Summary</h2>
+          <div *ngIf="cart$ | async as cart">
+            <div *ngFor="let item of cart.items" class="flex justify-between py-2">
+              <div>
+                <span class="font-medium">{{item.title}}</span>
+                <span class="text-gray-600 ml-2">x{{item.quantity}}</span>
+              </div>
+              <span>${{formatPrice(item.price * item.quantity)}}</span>
+            </div>
+            <div class="border-t mt-4 pt-4">
+              <div class="flex justify-between font-bold">
+                <span>Total:</span>
+                <span>${{formatPrice(cart.total)}}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+  
+        <!-- Checkout Form -->
+        <div class="bg-white p-6 rounded-lg shadow">
+          <h2 class="text-xl font-semibold mb-4">Payment Details</h2>
+          <form (ngSubmit)="onSubmit()" #checkoutForm="ngForm">
+            <div class="space-y-4">
+              <!-- Personal Info -->
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium mb-1">First Name</label>
+                  <input type="text" 
+                         [(ngModel)]="formData.firstName" 
+                         name="firstName" 
+                         required
+                         class="w-full p-2 border rounded">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1">Last Name</label>
+                  <input type="text" 
+                         [(ngModel)]="formData.lastName" 
+                         name="lastName" 
+                         required
+                         class="w-full p-2 border rounded">
+                </div>
+              </div>
+  
+              <div>
+                <label class="block text-sm font-medium mb-1">Email</label>
+                <input type="email" 
+                       [(ngModel)]="formData.email" 
+                       name="email" 
+                       required
+                       class="w-full p-2 border rounded">
+              </div>
+  
+              <!-- Shipping Info -->
+              <div>
+                <label class="block text-sm font-medium mb-1">Address</label>
+                <input type="text" 
+                       [(ngModel)]="formData.address" 
+                       name="address" 
+                       required
+                       class="w-full p-2 border rounded">
+              </div>
+  
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium mb-1">City</label>
+                  <input type="text" 
+                         [(ngModel)]="formData.city" 
+                         name="city" 
+                         required
+                         class="w-full p-2 border rounded">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1">ZIP</label>
+                  <input type="text" 
+                         [(ngModel)]="formData.zip" 
+                         name="zip" 
+                         required
+                         class="w-full p-2 border rounded">
+                </div>
+              </div>
+  
+              <!-- Payment Info -->
+              <div>
+                <label class="block text-sm font-medium mb-1">Card Number</label>
+                <input type="text" 
+                       [(ngModel)]="formData.cardNumber" 
+                       name="cardNumber" 
+                       required
+                       class="w-full p-2 border rounded">
+              </div>
+  
+              <div class="grid grid-cols-2 gap-4">
+                <div>
+                  <label class="block text-sm font-medium mb-1">Expiry Date</label>
+                  <input type="text" 
+                         [(ngModel)]="formData.cardExpiry" 
+                         name="cardExpiry" 
+                         placeholder="MM/YY"
+                         required
+                         class="w-full p-2 border rounded">
+                </div>
+                <div>
+                  <label class="block text-sm font-medium mb-1">CVV</label>
+                  <input type="text" 
+                         [(ngModel)]="formData.cardCvv" 
+                         name="cardCvv" 
+                         required
+                         class="w-full p-2 border rounded">
+                </div>
+              </div>
+  
+              <button type="submit" 
+                      [disabled]="!checkoutForm.form.valid || isProcessing"
+                      class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 disabled:bg-gray-400">
+                {{isProcessing ? 'Processing...' : 'Place Order'}}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>

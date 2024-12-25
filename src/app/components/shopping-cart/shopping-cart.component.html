@@ -46,9 +46,10 @@
           <span class="font-semibold">Total:</span>
           <span class="font-bold">${{formatPrice((cart$ | async)?.total || 0)}}</span>
         </div>
-        <button class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors">
-          Checkout
-        </button>
+        <button (click)="checkout()" 
+        class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+  Checkout
+</button>
       </div>
     </div>
   </div>

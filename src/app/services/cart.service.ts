@@ -2,7 +2,6 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Cart, CartItem } from '../interfaces/cart.interface';
 import { Product } from '../interfaces/product.interface';
-import { calculatePrice, formatPrice } from '../utils/price.utils';
 
 @Injectable({
   providedIn: 'root'
@@ -58,19 +57,19 @@ export class CartService {
       this.removeFromCart(productId);
       return;
     }
-  
+
     const currentCart = this.cart$.value;
     const updatedItems = currentCart.items.map(item => 
       item.productId === productId 
         ? { ...item, quantity } 
         : item
     );
-  
+
     const updatedCart = {
       items: updatedItems,
       total: this.calculateTotal(updatedItems)
     };
-  
+
     this.cart$.next(updatedCart);
     this.saveCartToStorage(updatedCart);
   }
@@ -87,10 +86,15 @@ export class CartService {
     this.saveCartToStorage(updatedCart);
   }
 
+  clearCart(): void {
+    const emptyCart: Cart = { items: [], total: 0 };
+    this.cart$.next(emptyCart);
+    this.saveCartToStorage(emptyCart);
+  }
+
   private calculateTotal(items: CartItem[]): number {
     return items.reduce((total, item) => {
-      const itemTotal = calculatePrice(item.price, item.quantity);
-      return total + itemTotal;
+      return total + (item.price * item.quantity);
     }, 0);
   }
 }
