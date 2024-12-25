@@ -6,12 +6,6 @@ import { ProductService } from '../../services/product.service';
 import { Product } from '../../interfaces/product.interface';
 import { ProductCardComponent } from '../product-card/product-card.component';
 
-interface SortOption {
-  label: string;
-  value: string;
-  compareFn: (a: Product, b: Product) => number;
-}
-
 @Component({
   selector: 'app-product-list',
   standalone: true,
@@ -25,40 +19,17 @@ export class ProductListComponent implements OnInit {
   categories: string[] = [];
   selectedCategories: Set<string> = new Set();
   currentSort: string = 'default';
+  searchTerm: string = '';
   loading = true;
   error = '';
 
-  sortOptions: SortOption[] = [
-    {
-      label: 'Default',
-      value: 'default',
-      compareFn: () => 0
-    },
-    {
-      label: 'Price: Low to High',
-      value: 'price_asc',
-      compareFn: (a, b) => a.price - b.price
-    },
-    {
-      label: 'Price: High to Low',
-      value: 'price_desc',
-      compareFn: (a, b) => b.price - a.price
-    },
-    {
-      label: 'Rating',
-      value: 'rating',
-      compareFn: (a, b) => b.rating - a.rating
-    },
-    {
-      label: 'Name: A-Z',
-      value: 'name_asc',
-      compareFn: (a, b) => a.title.localeCompare(b.title)
-    },
-    {
-      label: 'Name: Z-A',
-      value: 'name_desc',
-      compareFn: (a, b) => b.title.localeCompare(a.title)
-    }
+  sortOptions = [
+    { label: 'Default', value: 'default' },
+    { label: 'Price: Low to High', value: 'price_asc' },
+    { label: 'Price: High to Low', value: 'price_desc' },
+    { label: 'Rating', value: 'rating' },
+    { label: 'Name: A-Z', value: 'name_asc' },
+    { label: 'Name: Z-A', value: 'name_desc' }
   ];
 
   constructor(private productService: ProductService) {}
@@ -72,7 +43,6 @@ export class ProductListComponent implements OnInit {
     this.productService.getProducts().subscribe({
       next: (response) => {
         this.products = response.products;
-        this.filteredProducts = this.products;
         this.categories = [...new Set(this.products.map(product => product.category))];
         this.loading = false;
         this.applyFiltersAndSort();
@@ -83,6 +53,12 @@ export class ProductListComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  onSearch(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    this.searchTerm = target.value;
+    this.applyFiltersAndSort();
   }
 
   toggleCategory(category: string): void {
@@ -100,21 +76,46 @@ export class ProductListComponent implements OnInit {
   }
 
   private applyFiltersAndSort(): void {
-    // First apply category filters
-    if (this.selectedCategories.size === 0) {
-      this.filteredProducts = [...this.products];
-    } else {
-      this.filteredProducts = this.products.filter(product => 
-        this.selectedCategories.has(product.category)
-      );
+    // First, apply search filter
+    let filtered = this.products;
+    if (this.searchTerm?.trim()) {
+        const search = this.searchTerm.toLowerCase().trim();
+        filtered = filtered.filter(product => 
+            (product.title?.toLowerCase() || '').includes(search) ||
+            (product.description?.toLowerCase() || '').includes(search) ||
+            (product.category?.toLowerCase() || '').includes(search) ||
+            (product.brand?.toLowerCase() || '').includes(search)
+        );
     }
 
-    // Then apply sorting
-    const sortOption = this.sortOptions.find(option => option.value === this.currentSort);
-    if (sortOption) {
-      this.filteredProducts.sort(sortOption.compareFn);
+    // Then apply category filter
+    if (this.selectedCategories.size > 0) {
+        filtered = filtered.filter(product => 
+            product.category && this.selectedCategories.has(product.category)
+        );
     }
-  }
+
+    // Finally, apply sorting
+    switch (this.currentSort) {
+        case 'price_asc':
+            filtered.sort((a, b) => (a.price || 0) - (b.price || 0));
+            break;
+        case 'price_desc':
+            filtered.sort((a, b) => (b.price || 0) - (a.price || 0));
+            break;
+        case 'rating':
+            filtered.sort((a, b) => (b.rating || 0) - (a.rating || 0));
+            break;
+        case 'name_asc':
+            filtered.sort((a, b) => (a.title || '').localeCompare(b.title || ''));
+            break;
+        case 'name_desc':
+            filtered.sort((a, b) => (b.title || '').localeCompare(a.title || ''));
+            break;
+    }
+
+    this.filteredProducts = filtered;
+}
 
   isCategorySelected(category: string): boolean {
     return this.selectedCategories.has(category);
