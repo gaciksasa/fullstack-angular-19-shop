@@ -19,6 +19,14 @@ export class ShoppingCartComponent {
 
   constructor(private cartService: CartService) {}
 
+  updateQuantity(productId: number, quantity: number): void {
+    if (quantity > 0) {
+      this.cartService.updateQuantity(productId, quantity);
+    } else {
+      this.removeItem(productId);
+    }
+  }
+
   removeItem(productId: number): void {
     this.cartService.removeFromCart(productId);
   }

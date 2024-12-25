@@ -53,6 +53,28 @@ export class CartService {
     this.saveCartToStorage(updatedCart);
   }
 
+  updateQuantity(productId: number, quantity: number): void {
+    if (quantity <= 0) {
+      this.removeFromCart(productId);
+      return;
+    }
+  
+    const currentCart = this.cart$.value;
+    const updatedItems = currentCart.items.map(item => 
+      item.productId === productId 
+        ? { ...item, quantity } 
+        : item
+    );
+  
+    const updatedCart = {
+      items: updatedItems,
+      total: this.calculateTotal(updatedItems)
+    };
+  
+    this.cart$.next(updatedCart);
+    this.saveCartToStorage(updatedCart);
+  }
+
   removeFromCart(productId: number): void {
     const currentCart = this.cart$.value;
     const updatedCart = {

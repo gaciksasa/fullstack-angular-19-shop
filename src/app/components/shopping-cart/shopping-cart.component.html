@@ -23,9 +23,20 @@
               Remove
             </button>
           </div>
+          
           <div class="flex items-center justify-between mt-2">
-            <span>Qty: {{item.quantity}}</span>
-            <span>${{formatPrice(item.price * item.quantity)}}</span>
+            <div class="flex items-center space-x-2">
+              <button (click)="updateQuantity(item.productId, item.quantity - 1)"
+                      class="w-8 h-8 flex items-center justify-center bg-gray-100 rounded hover:bg-gray-200">
+                -
+              </button>
+              <span class="w-8 text-center">{{item.quantity}}</span>
+              <button (click)="updateQuantity(item.productId, item.quantity + 1)"
+                      class="w-8 h-8 flex items-center justify-center bg-gray-100 rounded hover:bg-gray-200">
+                +
+              </button>
+            </div>
+            <span class="font-medium">${{formatPrice(item.price * item.quantity)}}</span>
           </div>
         </div>
       </div>
@@ -35,7 +46,7 @@
           <span class="font-semibold">Total:</span>
           <span class="font-bold">${{formatPrice((cart$ | async)?.total || 0)}}</span>
         </div>
-        <button class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+        <button class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700 transition-colors">
           Checkout
         </button>
       </div>
