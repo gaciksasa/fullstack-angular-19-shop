@@ -7,25 +7,21 @@
     </div>
     
     <div *ngIf="(cart$ | async)?.items as items">
-      <div *ngIf="items.length === 0" class="text-center py-8">
-        Your cart is empty
-      </div>
-      
       <div *ngFor="let item of items" class="flex items-center gap-4 mb-4 pb-4 border-b">
         <img [src]="item.thumbnail" [alt]="item.title" class="w-16 h-16 object-cover rounded">
         <div class="flex-1">
           <h3 class="font-semibold">{{item.title}}</h3>
           <div class="flex items-center justify-between mt-2">
             <span>Qty: {{item.quantity}}</span>
-            <span>${{item.price * item.quantity}}</span>
+            <span>${{formatPrice(item.price * item.quantity)}}</span>
           </div>
         </div>
       </div>
       
-      <div *ngIf="items.length > 0" class="mt-4 pt-4 border-t">
+      <div class="mt-4 pt-4 border-t">
         <div class="flex justify-between items-center mb-4">
           <span class="font-semibold">Total:</span>
-          <span class="font-bold">${{(cart$ | async)?.total}}</span>
+          <span class="font-bold">${{formatPrice((cart$ | async)?.total || 0)}}</span>
         </div>
         <button class="w-full bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
           Checkout
