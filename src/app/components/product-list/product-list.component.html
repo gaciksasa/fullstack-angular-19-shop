@@ -1,1 +1,48 @@
-<p>product-list works!</p>
+<div class="container mx-auto px-4 py-8">
+    <div class="flex flex-col md:flex-row gap-8">
+      <!-- Sidebar with Filters -->
+      <div class="w-full md:w-64 flex-shrink-0">
+        <div class="bg-white rounded-lg shadow p-4">
+          <h2 class="text-lg font-semibold mb-4">Categories</h2>
+          <div class="space-y-2">
+            <div *ngFor="let category of categories" 
+                 class="flex items-center">
+              <input type="checkbox"
+                     [id]="category"
+                     [checked]="isCategorySelected(category)"
+                     (change)="toggleCategory(category)"
+                     class="w-4 h-4 text-blue-600 rounded border-gray-300 focus:ring-blue-500">
+              <label [for]="category" 
+                     class="ml-2 text-gray-700 capitalize cursor-pointer">
+                {{category}}
+              </label>
+            </div>
+          </div>
+        </div>
+      </div>
+  
+      <!-- Product Grid -->
+      <div class="flex-1">
+        <div *ngIf="loading" class="text-center py-8">
+          Loading products...
+        </div>
+  
+        <div *ngIf="error" class="text-center text-red-500 py-8">
+          {{ error }}
+        </div>
+  
+        <div *ngIf="!loading && !error">
+          <div *ngIf="filteredProducts.length === 0" class="text-center py-8">
+            No products found for selected categories.
+          </div>
+  
+          <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <app-product-card 
+              *ngFor="let product of filteredProducts" 
+              [product]="product">
+            </app-product-card>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>

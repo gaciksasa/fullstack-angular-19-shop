@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { ProductService } from '../../services/product.service';
 import { Product } from '../../interfaces/product.interface';
@@ -8,27 +9,15 @@ import { ProductCardComponent } from '../product-card/product-card.component';
 @Component({
   selector: 'app-product-list',
   standalone: true,
-  imports: [CommonModule, RouterModule, ProductCardComponent],
-  template: `
-    <div class="container mx-auto px-4">
-      <h1 class="text-2xl font-bold mb-6">Our Products</h1>
-      <div *ngIf="loading" class="text-center py-8">
-        Loading products...
-      </div>
-      <div *ngIf="error" class="text-center text-red-500 py-8">
-        {{ error }}
-      </div>
-      <div *ngIf="!loading && !error" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-        <app-product-card 
-          *ngFor="let product of products" 
-          [product]="product">
-        </app-product-card>
-      </div>
-    </div>
-  `
+  imports: [CommonModule, RouterModule, FormsModule, ProductCardComponent],
+  templateUrl: './product-list.component.html',
+  styleUrl: './product-list.component.css'
 })
 export class ProductListComponent implements OnInit {
   products: Product[] = [];
+  filteredProducts: Product[] = [];
+  categories: string[] = [];
+  selectedCategories: Set<string> = new Set();
   loading = true;
   error = '';
 
@@ -43,6 +32,8 @@ export class ProductListComponent implements OnInit {
     this.productService.getProducts().subscribe({
       next: (response) => {
         this.products = response.products;
+        this.filteredProducts = this.products;
+        this.categories = [...new Set(this.products.map(product => product.category))];
         this.loading = false;
       },
       error: (error) => {
@@ -51,5 +42,28 @@ export class ProductListComponent implements OnInit {
         this.loading = false;
       }
     });
+  }
+
+  toggleCategory(category: string): void {
+    if (this.selectedCategories.has(category)) {
+      this.selectedCategories.delete(category);
+    } else {
+      this.selectedCategories.add(category);
+    }
+    this.filterProducts();
+  }
+
+  filterProducts(): void {
+    if (this.selectedCategories.size === 0) {
+      this.filteredProducts = this.products;
+    } else {
+      this.filteredProducts = this.products.filter(product => 
+        this.selectedCategories.has(product.category)
+      );
+    }
+  }
+
+  isCategorySelected(category: string): boolean {
+    return this.selectedCategories.has(category);
   }
 }
