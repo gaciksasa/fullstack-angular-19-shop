@@ -15,6 +15,7 @@ export class ProductDetailComponent implements OnInit {
   product: Product | null = null;
   loading = false;
   error = '';
+  currentImageIndex = 0;
 
   constructor(
     private route: ActivatedRoute,
@@ -59,5 +60,23 @@ export class ProductDetailComponent implements OnInit {
     if (this.product) {
       this.cartService.addToCart(this.product);
     }
+  }
+
+  nextImage(): void {
+    if (this.product && this.product.images) {
+      this.currentImageIndex = (this.currentImageIndex + 1) % this.product.images.length;
+    }
+  }
+
+  previousImage(): void {
+    if (this.product && this.product.images) {
+      this.currentImageIndex = this.currentImageIndex === 0 
+        ? this.product.images.length - 1 
+        : this.currentImageIndex - 1;
+    }
+  }
+
+  setImage(index: number): void {
+    this.currentImageIndex = index;
   }
 }

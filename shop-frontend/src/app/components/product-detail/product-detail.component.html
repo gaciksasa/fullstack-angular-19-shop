@@ -11,11 +11,29 @@
       <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
         <!-- Image Gallery -->
         <div>
-          <img [src]="product.thumbnail" [alt]="product.title" 
-               class="w-full h-96 object-cover rounded-lg">
+          <div class="relative h-96">
+            <img [src]="product.images[currentImageIndex]" [alt]="product.title" 
+                 class="w-full h-96 object-cover rounded-lg">
+            
+            <button *ngIf="currentImageIndex > 0"
+                    (click)="previousImage()"
+                    class="absolute left-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70">
+              ←
+            </button>
+            
+            <button *ngIf="product.images.length > 1 && currentImageIndex < product.images.length - 1"
+                    (click)="nextImage()"
+                    class="absolute right-2 top-1/2 -translate-y-1/2 bg-black/50 text-white p-2 rounded-full hover:bg-black/70">
+              →
+            </button>
+          </div>
+          
           <div class="grid grid-cols-4 gap-2 mt-4">
-            <img *ngFor="let image of product.images"
+            <img *ngFor="let image of product.images; let i = index"
                  [src]="image" [alt]="product.title"
+                 (click)="setImage(i)"
+                 [class.border-2]="i === currentImageIndex"
+                 [class.border-blue-500]="i === currentImageIndex"
                  class="w-full h-24 object-cover rounded cursor-pointer">
           </div>
         </div>

@@ -1809,6 +1809,7 @@ const productsList = products.map(product => ({
     discountPercentage: product.discountPercentage, 
     rating: product.rating,
     stock: product.stock,
+    reviews: product.reviews,
     sku: product.sku,
     brand: product.brand,
     category: product.category,
