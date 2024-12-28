@@ -28,9 +28,11 @@ export class CartService {
   }
 
   addToCart(product: Product, quantity: number = 1): void {
+    if (!product.id) return;  // Early return if no id
+  
     const currentCart = this.cart$.value;
     const existingItem = currentCart.items.find(item => item.productId === product.id);
-
+  
     if (existingItem) {
       existingItem.quantity += quantity;
     } else {
@@ -42,17 +44,17 @@ export class CartService {
         thumbnail: product.thumbnail
       });
     }
-
+  
     const updatedCart = {
       items: [...currentCart.items],
       total: this.calculateTotal(currentCart.items)
     };
-
+  
     this.cart$.next(updatedCart);
     this.saveCartToStorage(updatedCart);
   }
 
-  updateQuantity(productId: number, quantity: number): void {
+  updateQuantity(productId: number | string, quantity: number): void {
     if (quantity <= 0) {
       this.removeFromCart(productId);
       return;
@@ -60,7 +62,7 @@ export class CartService {
 
     const currentCart = this.cart$.value;
     const updatedItems = currentCart.items.map(item => 
-      item.productId === productId 
+      item.productId.toString() === productId.toString()
         ? { ...item, quantity } 
         : item
     );
@@ -74,10 +76,12 @@ export class CartService {
     this.saveCartToStorage(updatedCart);
   }
 
-  removeFromCart(productId: number): void {
+  removeFromCart(productId: number | string): void {
     const currentCart = this.cart$.value;
     const updatedCart = {
-      items: currentCart.items.filter(item => item.productId !== productId),
+      items: currentCart.items.filter(item => 
+        item.productId.toString() !== productId.toString()
+      ),
       total: 0
     };
     updatedCart.total = this.calculateTotal(updatedCart.items);

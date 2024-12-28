@@ -8,11 +8,12 @@ import { Product } from '../../../interfaces/product.interface';
   selector: 'app-product-list-admin',
   standalone: true,
   imports: [CommonModule, RouterModule],
-  templateUrl: './product-list-admin.component.html',
-  styleUrl: './product-list-admin.component.css'
+  templateUrl: './product-list-admin.component.html'
 })
 export class ProductListAdminComponent implements OnInit {
   products: Product[] = [];
+  loading = false;
+  error = '';
 
   constructor(private productService: ProductService) {}
 
@@ -20,22 +21,37 @@ export class ProductListAdminComponent implements OnInit {
     this.loadProducts();
   }
 
-  private loadProducts(): void {
+  loadProducts(): void {
+    this.loading = true;
     this.productService.getProducts().subscribe({
       next: (response) => {
         this.products = response.products;
+        this.loading = false;
       },
-      error: (error) => {
-        console.error('Error loading products:', error);
+      error: (err) => {
+        this.error = 'Error loading products';
+        this.loading = false;
       }
     });
   }
 
-  editProduct(id: number): void {
-    // Will implement later
+  editProduct(productId: number | undefined): void {
+    if (productId) {
+      // Navigate to edit page
+      window.location.href = `/admin/products/edit/${productId}`;
+    }
   }
 
-  deleteProduct(id: number): void {
-    // Will implement later
+  deleteProduct(productId: number | undefined): void {
+    if (productId && confirm('Are you sure you want to delete this product?')) {
+      this.productService.deleteProduct(productId.toString()).subscribe({
+        next: () => {
+          this.loadProducts(); // Reload the list
+        },
+        error: (err) => {
+          this.error = 'Error deleting product';
+        }
+      });
+    }
   }
 }
