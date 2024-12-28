@@ -1,0 +1,58 @@
+<div class="min-h-screen bg-gray-100">
+    <!-- Admin Header -->
+    <div class="bg-white shadow">
+      <div class="container mx-auto px-4 py-6">
+        <h1 class="text-2xl font-bold">Shop Admin</h1>
+        <!-- Admin Navigation -->
+        <nav class="mt-4">
+          <ul class="flex space-x-4">
+            <li>
+              <a routerLink="/admin" 
+                 routerLinkActive="text-blue-600 font-semibold" 
+                 [routerLinkActiveOptions]="{exact: true}"
+                 class="text-gray-600 hover:text-gray-900">Dashboard</a>
+            </li>
+            <li>
+              <a routerLink="/admin/products" 
+                 routerLinkActive="text-blue-600 font-semibold"
+                 class="text-gray-600 hover:text-gray-900">Products</a>
+            </li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  
+    <!-- Main Content Area -->
+    <div class="container mx-auto px-4 py-8">
+      <!-- Dashboard Stats -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div class="bg-white rounded-lg shadow p-6">
+          <h3 class="text-gray-500 text-sm font-medium">Total Products</h3>
+          <p class="text-3xl font-bold">30</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+          <h3 class="text-gray-500 text-sm font-medium">Total Categories</h3>
+          <p class="text-3xl font-bold">5</p>
+        </div>
+        <div class="bg-white rounded-lg shadow p-6">
+          <h3 class="text-gray-500 text-sm font-medium">Low Stock Items</h3>
+          <p class="text-3xl font-bold">3</p>
+        </div>
+      </div>
+  
+      <!-- Quick Actions -->
+      <div class="bg-white rounded-lg shadow p-6">
+        <h2 class="text-lg font-semibold mb-4">Quick Actions</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <button routerLink="/admin/products/new"
+                  class="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700">
+            Add New Product
+          </button>
+          <button routerLink="/admin/products"
+                  class="flex items-center justify-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-green-600 hover:bg-green-700">
+            Manage Products
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
